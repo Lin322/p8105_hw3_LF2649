@@ -1,0 +1,61 @@
+---
+title: "hw3_lf2649"
+author: "Lin Feng"
+date: "October 6, 2020"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(p8105.datasets)
+
+```
+
+#Problem 1
+```{r}
+data("instacart")
+```
+
+```{r}
+instacart %>% 
+  count(aisle) %>% 
+  arrange(desc(n))
+```
+Make a plot
+
+```{r}
+instacart %>% 
+  count(aisle) %>% 
+  filter(n > 10000) %>% 
+  mutate(
+    aisle = factor(aisle),
+    aisle = fct_reorder(aisle, n)
+  ) %>% 
+  ggplot(aes(x = aisle, y=n)) + geom_point()
+  theme(axis.text.x = element_text(angle = 270, vjust = 0.5, hjust = 1))
+```
+
+##Make a table
+```{r}
+instacart %>% 
+  filter(aisle %in% c("baking ingredientts", "dog food care", "packaged vegetables fruits")) %>% 
+  group_by(aisle) %>% 
+  count(product_name) %>% 
+  mutate(rank = min_rank(n)) %>% 
+  filter(rank < 4) %>% 
+  arrange(aisle, rank) %>% 
+  knitr::kable()
+```
+
+Apple vs Icecream
+```{r}
+instacart %>% 
+  filter(product_name %in% c("Pink Lady Apples","Coffee Ice Cream")) %>% 
+  group_by(product_name, order_dow) %>% 
+  summarize(mean_hour = mean(order_hour_of_day)) %>% 
+  pivot_wider(
+    names_from = order_dow, 
+    values_from = mean_hour
+  )
+```
+
