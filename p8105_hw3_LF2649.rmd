@@ -222,15 +222,35 @@ tmaxc_mean_plot_jan =
   filter(month ==  "1") %>% 
   ggplot(aes(x = year, y = tmax_mean)) + 
   geom_point(alpha = 0.5) + 
-  geom_smooth(se =  FALSE)
+  geom_smooth(se =  FALSE) +
+  labs(
+    title = "January"
+  )
   
 tmaxc_mean_plot_jul = 
   tmaxc_mean_jj %>% 
   filter(month == "7") %>% 
   ggplot(aes(x = year, y = tmax_mean)) + 
   geom_point(alpha = 0.5) + 
-  geom_smooth(se =  FALSE)
+  geom_smooth(se =  FALSE) + 
+    labs(
+    title = "July"
+  )
 
 tmaxc_mean_plot_jan + tmaxc_mean_plot_jul
+```
+
+## tmax_timn plot
+
+* Make a two-panel plot showing 
+  * (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and 
+  * (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
+  
+```{r i}
+tmax_tmin_plot = 
+  noaa_sep %>% 
+  ggplot(aes(x = tmax_c, y = tmin_c)) + 
+  geom_line(alpha = 0.5) + 
+  geom_smooth(se = FALSE)
 ```
 
