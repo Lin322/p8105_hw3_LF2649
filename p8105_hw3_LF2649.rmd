@@ -9,6 +9,8 @@ output: github_document
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+install.packages("patchwork")
+library(patchwork)
 library(p8105.datasets)
 knitr::opts_chunk$set(
 	fig.width = 6, 
@@ -173,15 +175,63 @@ The goal is to do some exploration of this dataset. To that end, write a short d
 * Ensure observations for temperature, precipitation, and snowfall are given in reasonable units. 
 * For snowfall, what are the most commonly observed values? Why? 
 
-```{r}
+```{r seperate}
+noaa_sep = 
 ny_noaa %>% 
-  separate(date, sep="-", into = c("year", "month", "day")) %>% 
+  separate(date, sep="-", into = c("year", "month", "day"), convert = TRUE) %>% 
   mutate(
-    
+    tmin = as.numeric(tmin),
+    tmax = as.numeric(tmax),
+    prcp = as.numeric(prcp)
+  ) %>% 
+  mutate(
+    tmin_c = tmin/10,
+    tmax_c = tmax/10,
+    prcp_mm = prcp/10
   )
+  
 
-head(ny_noaa)  
+head(noaa_sep)  
 ```
 
 
+```{r snow}
+ny_noaa %>% 
+  count(snow) %>% 
+  arrange(desc(n))
+
+```
+
+### the most commonly observed values is 0, becasue number of non-snow day is on avergae greater than snow day. 
+
+
+## Average tmax in Jan and Jul
+
+* Make a two-panel plot showing the average max temperature in January and in July in each station across years. 
+* Is there any observable / interpretable structure? 
+* Any outliers?
+
+```{r}
+tmaxc_mean_jj = 
+  noaa_sep %>%
+  filter(month %in% c("1", "7")) %>% 
+  group_by(id, year, month) %>% 
+  summarize(tmax_mean = mean (tmax_c, na.rm=TRUE)) 
+
+tmaxc_mean_plot_jan = 
+  tmaxc_mean_jj %>% 
+  filter(month == "1") %>% 
+  ggplot(aes(x = year, y = tmax_mean)) + 
+  geom_point(alpha = 0.5) + 
+  geom_smooth(se =  FALSE)
+  
+tmaxc_mean_plot_jul = 
+  tmaxc_mean_jj %>% 
+  filter(month == "7") %>% 
+  ggplot(aes(x = year, y = tmax_mean)) + 
+  geom_point(alpha = 0.5) + 
+  geom_smooth(se =  FALSE)
+
+tmaxc_mean_plot_jan + tmaxc_mean_plot_jul
+```
 
