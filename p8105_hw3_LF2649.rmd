@@ -4,6 +4,7 @@ author: "Lin Feng"
 date: '`r format(Sys.time(), "%Y-%m-%d")`'
 output: github_document
 
+
 ---
 
 ```{r setup, include=FALSE}
@@ -90,6 +91,8 @@ instacart %>%
 
 # Problem 2
 
+## Load and clean data
+
 * Load, tidy, and otherwise wrangle the data. 
 * Your final dataset should include all originally observed variables and values; 
 * have useful variable names; 
@@ -113,4 +116,26 @@ accel_df = read_csv("./accel_data.csv") %>%
 
 head(accel_df)
 ```
+### Description
+This accelerometers data frames contains `r ncol(accel_df)` variables: `r names(accel_df)`. There are `r nrow(accel_df)` records in total that were collected on a 63 year-old male with BMI 25, who was admitted to the Advanced Cardiac Care Center of Columbia University Medical Center and diagnosed with congestive heart failure (CHF). The variable *activity* describes the activity counts for each minute of a 24-hour day starting at midnight.
 
+
+## Create each-day activity andd corresponding table
+
+* Traditional analyses of accelerometer data focus on the total activity over the day. 
+* Using your tidied dataset, aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals. 
+* Are any trends apparent?
+
+
+```{r}
+accel_day = 
+accel_df %>% 
+  group_by(day_id, day, weekday) %>% 
+  summarise(activity_day = sum(activity)) 
+  
+```
+
+## Make a plot 
+
+* Accelerometer data allows the inspection activity over the course of the day. 
+* Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. * * * Describe in words any patterns or conclusions you can make based on this graph.
