@@ -23,37 +23,19 @@ scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
-### Due date
 
-Due: October 10 at 10:00pm. 
-
-### Points
-
-| Problem         | Points    |
-|:--------------- |:--------- |
-| Problem 0       | 20        |
-| Problem 1       | --        |
-| Problem 2       | 40        |
-| Problem 3       | 40        |
-| Optional survey | No points |
-
-
-### Problem 0
-
-This "problem" focuses on structure of your submission, especially the use git and GitHub for reproducibility, R Projects to organize your work, R Markdown to write reproducible reports, relative paths to load data from local files, and reasonable naming structures for your files. 
-
-
-### Problem 1
+# Problem 1
 
 ```{r}
 data("instacart")
+head(instacart)
 ```
 
-This dataset contains `r nrow(instacart)` rows and ... columns. 
+This dataset contains `r nrow(instacart)` rows and `r ncol(instacart)`  columns. 
 
 Observations are the level of items in orders by user. There are user / order variables -- user ID, order ID, order day, and order hour. There are also item variables -- name, aisle, department, and some numeric codes. 
 
-How many aisles, and which are most items from?
+## How many aisles, and which are most items from?
 
 ```{r}
 instacart %>% 
@@ -62,7 +44,7 @@ instacart %>%
 ```
 
 
-Let's make a plot
+## Make a plot
 
 ```{r}
 instacart %>% 
@@ -78,7 +60,7 @@ instacart %>%
 ```
 
 
-Let's make a table!!
+## Make a table
 
 ```{r}
 instacart %>% 
@@ -92,7 +74,7 @@ instacart %>%
 ```
 
 
-Apples vs ice cream..
+## Apples vs ice cream..
 
 ```{r}
 instacart %>% 
@@ -103,5 +85,32 @@ instacart %>%
 		names_from = order_dow,
 		values_from = mean_hour
 	)
+```
+
+
+# Problem 2
+
+* Load, tidy, and otherwise wrangle the data. 
+* Your final dataset should include all originally observed variables and values; 
+* have useful variable names; 
+* include a weekday vs weekend variable; 
+* and encode data with reasonable variable classes. 
+* Describe the resulting dataset (e.g. what variables exist, how many observations, etc).
+
+```{r}
+accel_df = read_csv("./accel_data.csv") %>% 
+  janitor::clean_names() %>% 
+  pivot_longer(
+    activity_1:activity_1440,
+    names_to = "minute",
+    values_to = "activity"
+  ) %>% 
+  mutate( weekday = case_when(
+    day %in% c("Monday","Tuesday","Wednesday","Thursday","Friday") ~ "weekday",
+    day %in% c("Saturday","Sunday") ~ "weekend")
+    ) %>% 
+  relocate(week, day_id, weekday, minute, activity, day)
+
+head(accel_df)
 ```
 
