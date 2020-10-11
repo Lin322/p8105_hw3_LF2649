@@ -254,3 +254,13 @@ tmax_tmin_plot =
   geom_smooth(se = FALSE)
 ```
 
+```{r ii}
+library(ggridges)
+
+snow_year_plot = 
+noaa_sep %>% 
+  mutate(snow = as.numeric(snow)) %>% 
+  ggplot(aes(x = snow, fill = year))+ 
+  geom_density_ridges(alpha=0.8)
+ 
+
