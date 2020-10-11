@@ -165,7 +165,9 @@ data("ny_noaa")
 
 head(ny_noaa)
 ```
-The goal is to do some exploration of this dataset. To that end, write a short description of the dataset, noting the size and structure of the data, describing some key variables, and indicating the extent to which missing data is an issue. Then, do or answer the following (commenting on the results of each):
+The goal is to do some exploration of this dataset. To that end, write a short description of the dataset, noting the size and structure of the data, describing some key variables, and indicating the extent to which missing data is an issue. 
+
+Then, do or answer the following (commenting on the results of each):
 
 ## Data Cleaning
 
@@ -207,8 +209,8 @@ ny_noaa %>%
 ## Average tmax in Jan and Jul
 
 * Make a two-panel plot showing the average max temperature in January and in July in each station across years. 
-* Is there any observable / interpretable structure? 
-* Any outliers?
+* Is there any observable / interpretable structure? Any outliers?
+  * In general the means of max temperature in July are higher and more stable than in January. There are several outliers in both plots. 
 
 ```{r}
 tmaxc_mean_jj = 
@@ -246,6 +248,7 @@ tmaxc_mean_plot_jan + tmaxc_mean_plot_jul
   * (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and 
   * (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
   
+  
 ```{r i}
 tmax_tmin_plot = 
   noaa_sep %>% 
@@ -254,13 +257,23 @@ tmax_tmin_plot =
   geom_smooth(se = FALSE)
 ```
 
+  
 ```{r ii}
-library(ggridges)
+snow_plot = 
+  noaa_sep %>% 
+  mutate(
+    snowfall = as.numeric(snow), 
+    year = as.character(year)) %>% 
+  filter(snowfall > 0) %>% 
+  filter(100 > snowfall) %>% 
+  group_by(year) %>% 
+  ggplot(aes(x=year, y=snowfall), color=year)+
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
-snow_year_plot = 
-noaa_sep %>% 
-  mutate(snow = as.numeric(snow)) %>% 
-  ggplot(aes(x = snow, fill = year))+ 
-  geom_density_ridges(alpha=0.8)
- 
+tmax_tmin_plot + snow_plot
+```
+
+##Description of the dataset
+This dataset contain `r ncol(ny_noaa)` core variables on `r names(ny_noaa)`for all New York state weather stations from January 1, 1981 through December 31, 2010. There are `r nrow(ny_noaa)` records in total. Each weather station may collect only a subset of these variables, and therefore this dataset contains extensive missing data, and that has an huge impact on analysis. For, example, when plotting the maximun and minimun temperature graph, we need to remove 1134358 rows containing missing values, which accounts for `r 1134358/nrow(ny_noaa)` in the total dataset. 
 
